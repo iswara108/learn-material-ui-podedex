@@ -3,6 +3,7 @@ import { match, compile } from 'path-to-regexp'
 
 export interface IView extends Instance<typeof View> {}
 
+type IPageWithId = { id: string }
 const viewModel = types
   .model('View', {
     page: types.union(types.literal('pokemon'), types.literal('/')),
@@ -14,7 +15,7 @@ const viewModel = types
         case '/':
           return '/'
         case 'pokemon':
-          const toPath = compile<{ id: string }>('/pokemon/:id')
+          const toPath = compile<IPageWithId>('/pokemon/:id')
           return toPath({ id: self.id || '' })
         default:
           return self.page
@@ -38,8 +39,7 @@ export const View = types.optional(
 )
 
 function getViewFromURL() {
-  // Todo: DRY
-  const matchPokemon = match<{ id: string }>('/pokemon/:id')
+  const matchPokemon = match<IPageWithId>('/pokemon/:id')
   const matchedPokemon = matchPokemon(window.location.pathname)
 
   if (matchedPokemon) return { page: 'pokemon', id: matchedPokemon.params.id }

@@ -6,13 +6,11 @@ import { useMst } from './models/RootStore'
 
 function App() {
   const { view } = useMst()
-  return (
-    <>
-      <div className="App">Hello, you are seeing page: {view.page}</div>
-      {view.page === '/' && <Pokedex />}
-      {view.page === 'pokemon' && <Pokemon id={view.id || ''} />}
-    </>
-  )
+
+  if (view.page === '/') return <Pokedex />
+  else if (view.page === 'pokemon') return <Pokemon id={view.id || ''} />
+
+  return <></>
 }
 
 export default observer(App)
