@@ -3,36 +3,38 @@ import { match, compile } from 'path-to-regexp'
 
 export interface IView extends Instance<typeof View> {}
 
+const viewModel = types
+  .model('View', {
+    page: types.union(types.literal('pokemon'), types.literal('/')),
+    id: types.maybe(types.string)
+  })
+  .views(self => ({
+    get currentURL() {
+      switch (self.page) {
+        case '/':
+          return '/'
+        case 'pokemon':
+          const toPath = compile<{ id: string }>('/pokemon/:id')
+          return toPath({ id: self.id || '' })
+        default:
+          return self.page
+      }
+    }
+  }))
+  .actions(self => ({
+    openHomePage() {
+      self.page = '/'
+      self.id = undefined
+    },
+    openPokemonPage(id: string) {
+      self.page = 'pokemon'
+      self.id = id
+    }
+  }))
+
 export const View = types.optional(
-  types
-    .model('View', {
-      page: types.union(types.literal('pokemon'), types.literal('/')),
-      id: types.maybe(types.string)
-    })
-    .views(self => ({
-      get currentURL() {
-        switch (self.page) {
-          case '/':
-            return '/'
-          case 'pokemon':
-            const toPath = compile<{ id: string }>('/pokemon/:id')
-            return toPath({ id: self.id || '' })
-          default:
-            return self.page
-        }
-      }
-    }))
-    .actions(self => ({
-      openHomePage() {
-        self.page = '/'
-        self.id = undefined
-      },
-      openPokemonPage(id: string) {
-        self.page = 'pokemon'
-        self.id = id
-      }
-    })),
-  getViewFromURL() as any
+  viewModel,
+  getViewFromURL() as Instance<typeof viewModel>
 )
 
 function getViewFromURL() {
