@@ -1,4 +1,25 @@
-const mockData= {
+export type IPokemon = {
+  name: string
+  id: number
+  species: { name: string; url: string }
+  height: number
+  weight: number
+  types: { slot: number; type: { name: string; url: string } }[]
+  sprites: {
+    back_default: string
+    back_female: string | null
+    back_shiny: string
+    back_shiny_female: null
+    front_default: string
+    front_female: null
+    front_shiny: string
+    front_shiny_female: null
+  }
+}
+
+const mockData: {
+  [key: string]: IPokemon
+} = {
   1: {
     name: 'bulbasaur',
     id: 1,

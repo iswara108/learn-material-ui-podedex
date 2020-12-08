@@ -30,6 +30,12 @@ const viewModel = types
     openPokemonPage(id: string) {
       self.page = 'pokemon'
       self.id = id
+    },
+    setFromURL() {
+      const newView = getViewFromURL() as Instance<typeof viewModel>
+
+      self.page = newView.page
+      self.id = newView.id
     }
   }))
 
